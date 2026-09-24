@@ -10,8 +10,18 @@ public class Main {
         // Initialize database and tables
         SwingUtilities.invokeLater(() -> {
             try {
-                // Set look and feel
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                // Set look and feel to Nimbus for consistent Swing styling
+                boolean nimbusFound = false;
+                for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                    if ("Nimbus".equals(info.getName())) {
+                        UIManager.setLookAndFeel(info.getClassName());
+                        nimbusFound = true;
+                        break;
+                    }
+                }
+                if (!nimbusFound) {
+                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                }
                 
                 // Initialize database
                 DatabaseUtil.createDatabase();
