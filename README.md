@@ -55,7 +55,7 @@ The application uses the following tables:
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/aman333nolawz/MediSlot
    cd hospital
    ```
 
@@ -65,12 +65,12 @@ The application uses the following tables:
 
 3. **Build the project**:
    ```bash
-   ./gradlew build
+   gradle build
    ```
 
 4. **Run the application**:
    ```bash
-   ./gradlew run
+   gradle run
    ```
 
 ## OOP Principles Demonstrated
@@ -87,10 +87,3 @@ The application uses the following tables:
 - [User Manual](docs/user-manual.md) - Installation and usage guide
 - [Test Cases](docs/test-cases.md) - Sample test cases
 
-## Team Members
-
-This project was developed as part of the OOP course.
-
-## License
-
-This project is for educational purposes.
