@@ -9,16 +9,10 @@ repositories {
 
 dependencies {
     implementation 'com.mysql:mysql-connector-j:8.2.0'
-    testImplementation 'junit:junit:4.13.2'
 }
 
 application {
     mainClass = 'com.hospital.Main'
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {

@@ -12,15 +12,8 @@
 3. The application will create the database automatically on first run
 
 ### 2. Running the Application
-Option 1: Using Gradle
 ```bash
-./gradlew run
-```
-
-Option 2: Using JAR file
-```bash
-./gradlew jar
-java -jar build/libs/hospital-*.jar
+gradle run
 ```
 
 ## User Guide
