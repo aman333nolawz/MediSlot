@@ -162,21 +162,70 @@ public class AppointmentDAO {
     }
     
     public boolean isTimeSlotAvailable(int doctorId, Date date, String timeSlot) {
-        String sql = "SELECT COUNT(*) FROM appointments WHERE doctor_id = ? AND appointment_date = ? AND time_slot = ? AND status != 'CANCELLED'";
+        String sql = "SELECT time_slot FROM appointments WHERE doctor_id = ? AND appointment_date = ? AND status != 'CANCELLED'";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, doctorId);
             pstmt.setDate(2, new java.sql.Date(date.getTime()));
-            pstmt.setString(3, timeSlot);
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) == 0;
+                if (timeSlot == null || timeSlot.isEmpty()) {
+                    return false;
                 }
+                int[] requested = parseTimeSlot(timeSlot);
+                if (requested == null) {
+                    return false;
+                }
+                int reqStart = requested[0];
+                int reqEnd = requested[1];
+                if (reqEnd <= reqStart) {
+                    return false;
+                }
+                while (rs.next()) {
+                    String existing = rs.getString("time_slot");
+                    if (existing == null || existing.isEmpty()) {
+                        continue;
+                    }
+                    int[] ex = parseTimeSlot(existing);
+                    if (ex == null) {
+                        continue;
+                    }
+                    int exStart = ex[0];
+                    int exEnd = ex[1];
+                    if (exEnd <= exStart) {
+                        continue;
+                    }
+                    if (reqStart < exEnd && exStart < reqEnd) {
+                        return false;
+                    }
+                }
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private int[] parseTimeSlot(String slot) {
+        if (slot == null || !slot.contains("-")) {
+            return null;
+        }
+        String[] parts = slot.split("-");
+        if (parts.length != 2) {
+            return null;
+        }
+        try {
+            return new int[]{toMinutes(parts[0].trim()), toMinutes(parts[1].trim())};
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private int toMinutes(String time) {
+        String[] hm = time.split(":");
+        int h = Integer.parseInt(hm[0]);
+        int m = Integer.parseInt(hm[1]);
+        return h * 60 + m;
     }
     
     private Appointment mapResultSetToAppointment(ResultSet rs) throws SQLException {
